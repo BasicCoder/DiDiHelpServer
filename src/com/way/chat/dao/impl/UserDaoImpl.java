@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.way.chat.common.bean.SeekInfoEntity;
 import com.way.chat.common.bean.User;
 import com.way.chat.common.util.Constants;
 import com.way.chat.common.util.DButil;
@@ -61,7 +62,7 @@ public class UserDaoImpl implements UserDao {
 			if (rs.first()) {
 				setOnline(u.getId());// 更新表状态为在线
 				ArrayList<User> refreshList = refresh(u.getId());
-				System.out.println("UserID:" + refreshList.get(0).getId() + "  UserPwd:" + refreshList.get(0).getPassword());
+				System.out.println("UserID:" + refreshList.get(0).getId() + "     RefreshList:" + Boolean.toString(refreshList.isEmpty()));     
 				return refreshList;
 			}
 		} catch (SQLException e) {
@@ -125,6 +126,7 @@ public class UserDaoImpl implements UserDao {
 					list.add(friend);
 				} while (rs.next());
 			}
+			System.out.println("Refresh: " + Boolean.toString(list.isEmpty()));
 			return list;
 		} catch (SQLException e) {
 			// e.printStackTrace();
@@ -133,7 +135,35 @@ public class UserDaoImpl implements UserDao {
 		}
 		return null;
 	}
-
+	
+	@Override
+	public ArrayList<SeekInfoEntity> findAllSeekInfo(){
+		ArrayList<SeekInfoEntity> list = new ArrayList<SeekInfoEntity>();
+		Connection con = DButil.connect();
+		String sql = "select * from seekinfo";
+		PreparedStatement ps;
+		try {
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			if (rs.first()) {
+				do {
+					SeekInfoEntity SeekInfo = new SeekInfoEntity();
+					SeekInfo.setId(rs.getInt("_id"));
+					SeekInfo.setImg(rs.getInt("_img"));
+					SeekInfo.setName(rs.getString("_name"));
+					SeekInfo.setAddress(rs.getString("_address"));
+					SeekInfo.setSays(rs.getString("_says"));
+					list.add(SeekInfo);
+				}while(rs.next());
+			}
+			return list;
+		} catch(SQLException e){
+			
+		} finally{
+			DButil.close(con);
+		}
+		return null;
+	}
 	/**
 	 * 设置状态为在线
 	 * 
