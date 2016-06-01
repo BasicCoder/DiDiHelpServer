@@ -106,12 +106,11 @@ public class InputThread extends Thread {
 			case LOGIN:
 				User loginUser = (User) read_tranObject.getObject();
 				ArrayList<User> userlist = dao.login(loginUser);
-				//ArrayList<SeekInfoEntity> seeklist = dao.findAllSeekInfo(); // 得到当前所有需求信息表
-				//System.out.println("SeekInfoList: " + Boolean.toString(seeklist.isEmpty()));
+				
 				System.out.println("UserList: " + Boolean.toString(userlist.isEmpty()));
 				
 				TranObject<ArrayList<User>> login2Object = new TranObject<ArrayList<User>>(TranObjectType.LOGIN);
-				//TranObject<ArrayList<SeekInfoEntity>> seekInfoObject = new TranObject<ArrayList<SeekInfoEntity>>(TranObjectType.SEEKINFO);     
+				     
 				if (userlist != null) {// 如果登录成功
 					TranObject<User> onObject = new TranObject<User>(
 							TranObjectType.LOGIN);
@@ -124,16 +123,26 @@ public class InputThread extends Thread {
 					}
 					map.add(loginUser.getId(), out);// 先广播，再把对应用户id的写线程存入map中，以便转发消息时调用
 					login2Object.setObject(userlist);// 把好友列表加入回复的对象中
-					//seekInfoObject.setObject(seeklist);
+					
 					System.out.println("Have");
 				} else {
 					login2Object.setObject(null);
 					System.out.println("None");
 				}
 				out.setMessage(login2Object);// 同时把登录信息回复给用户
-				//out.setMessage(seekInfoObject); // 把当前需求信息回复给用户
+				
 				System.out.println(MyDate.getDateCN() + " 用户："
 						+ loginUser.getId() + " 上线了");
+				break;
+			case SEEKINFO:
+				System.out.println("SendSeekInfoList");
+				ArrayList<SeekInfoEntity> seeklist = dao.findAllSeekInfo(); // 得到当前所有需求信息表
+				System.out.println("SeekInfoList: " + Boolean.toString(seeklist.isEmpty()));
+				TranObject<ArrayList<SeekInfoEntity>> seekInfoObject = new TranObject<ArrayList<SeekInfoEntity>>(TranObjectType.SEEKINFO);
+				if(seeklist != null){
+					seekInfoObject.setObject(seeklist);
+					out.setMessage(seekInfoObject); // 把当前需求信息回复给用户
+				}
 				break;
 			case LOGOUT:// 如果是退出，更新数据库在线状态，同时群发告诉所有在线用户
 				User logoutUser = (User) read_tranObject.getObject();
