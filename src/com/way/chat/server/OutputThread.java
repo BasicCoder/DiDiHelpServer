@@ -50,6 +50,7 @@ public class OutputThread extends Thread {
 					wait();
 				}
 				if (object != null) {
+					System.out.println(object.getType());
 					oos.writeObject(object);
 					oos.flush();
 				}

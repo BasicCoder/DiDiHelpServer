@@ -106,23 +106,25 @@ public class InputThread extends Thread {
 			case LOGIN:
 				User loginUser = (User) read_tranObject.getObject();
 				ArrayList<User> userlist = dao.login(loginUser);
-				ArrayList<SeekInfoEntity> seeklist = dao.findAllSeekInfo(); // 得到当前所有需求信息表
-				System.out.println("SeekInfoList: " + Boolean.toString(seeklist.isEmpty()));
+				//ArrayList<SeekInfoEntity> seeklist = dao.findAllSeekInfo(); // 得到当前所有需求信息表
+				//System.out.println("SeekInfoList: " + Boolean.toString(seeklist.isEmpty()));
 				System.out.println("UserList: " + Boolean.toString(userlist.isEmpty()));
+				
 				TranObject<ArrayList<User>> login2Object = new TranObject<ArrayList<User>>(TranObjectType.LOGIN);
-				TranObject<ArrayList<SeekInfoEntity>> seekInfoObject = new TranObject<ArrayList<SeekInfoEntity>>(TranObjectType.SEEKINFO);     
+				//TranObject<ArrayList<SeekInfoEntity>> seekInfoObject = new TranObject<ArrayList<SeekInfoEntity>>(TranObjectType.SEEKINFO);     
 				if (userlist != null) {// 如果登录成功
 					TranObject<User> onObject = new TranObject<User>(
 							TranObjectType.LOGIN);
 					User login2User = new User();
 					login2User.setId(loginUser.getId());
 					onObject.setObject(login2User);
+					System.out.println("LoginHaveOutputThread: " + map.size());
 					for (OutputThread onOut : map.getAll()) {
 						onOut.setMessage(onObject);// 广播一下用户上线
 					}
 					map.add(loginUser.getId(), out);// 先广播，再把对应用户id的写线程存入map中，以便转发消息时调用
 					login2Object.setObject(userlist);// 把好友列表加入回复的对象中
-					seekInfoObject.setObject(seeklist);
+					//seekInfoObject.setObject(seeklist);
 					System.out.println("Have");
 				} else {
 					login2Object.setObject(null);

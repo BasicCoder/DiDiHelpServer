@@ -41,7 +41,12 @@ public class OutputThreadMap {
 	public synchronized OutputThread getById(Integer id) {
 		return map.get(id);
 	}
-
+	
+	public synchronized int size(){
+		return map.size();
+	}
+	
+	
 	// 得到所有写线程方法，用于向所有在线用户发送广播
 	public synchronized List<OutputThread> getAll() {
 		List<OutputThread> list = new ArrayList<OutputThread>();
