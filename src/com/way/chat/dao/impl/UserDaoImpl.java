@@ -164,6 +164,38 @@ public class UserDaoImpl implements UserDao {
 		}
 		return null;
 	}
+	
+	@Override
+	public int publishSeekInfo(SeekInfoEntity seekinfo){
+		int id;
+		Connection con = DButil.connect();
+		String sql1 = "insert into seekinfo(_id,_name,_address,_says,_img,_time) values(?,?,?,?,?,?)";
+		String sql2 = "select _id from seekinfo";
+		try {
+			PreparedStatement ps = con.prepareStatement(sql1);
+			ps.setInt(1, seekinfo.getId());
+			ps.setString(2, seekinfo.getName());
+			ps.setString(3, seekinfo.getAddress());
+			ps.setString(4, seekinfo.getSays());
+			ps.setInt(5, seekinfo.getImg());
+			ps.setString(6, MyDate.getDateCN());
+			int res = ps.executeUpdate();
+			if (res > 0) {
+				PreparedStatement ps2 = con.prepareStatement(sql2);
+				ResultSet rs = ps2.executeQuery();
+				if (rs.last()) {
+					id = rs.getInt("_id");
+					return id;
+				}
+			}
+		} catch (SQLException e) {
+			 e.printStackTrace();
+		} finally {
+			DButil.close(con);
+		}
+		return Constants.PUBLISH_FAIL;
+	}
+	
 	/**
 	 * 设置状态为在线
 	 * 

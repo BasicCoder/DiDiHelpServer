@@ -144,6 +144,18 @@ public class InputThread extends Thread {
 					out.setMessage(seekInfoObject); // 把当前需求信息回复给用户
 				}
 				break;
+			case PUBLISHINFO:
+				System.out.println("SendSeekInfoEntity");
+				SeekInfoEntity seekinfo = (SeekInfoEntity) read_tranObject.getObject();
+				int publishResult = dao.publishSeekInfo(seekinfo);
+				TranObject<SeekInfoEntity> onObject = new TranObject<SeekInfoEntity>(TranObjectType.PUBLISHINFO);
+				if(seekinfo != null){
+					onObject.setObject(seekinfo);
+					for (OutputThread onOut : map.getAll()) {
+						onOut.setMessage(onObject);// 广播一下用户上线
+					}
+				}
+				break;
 			case LOGOUT:// 如果是退出，更新数据库在线状态，同时群发告诉所有在线用户
 				User logoutUser = (User) read_tranObject.getObject();
 				int offId = logoutUser.getId();

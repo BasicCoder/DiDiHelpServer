@@ -17,4 +17,5 @@ public enum TranObjectType {
 	FILE, // 传输文件
 	REFRESH,//刷新好友列表
 	SEEKINFO, // 寻求信息
+	PUBLISHINFO, //发布信息
 }

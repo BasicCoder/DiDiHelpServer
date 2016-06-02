@@ -11,6 +11,7 @@ public interface UserDao {
 
 	public ArrayList<User> login(User u);
 	public ArrayList<SeekInfoEntity> findAllSeekInfo();
+	public int publishSeekInfo(SeekInfoEntity seekinfo);
 	
 	public ArrayList<User> refresh(int id);
 	public void logout(int id);
